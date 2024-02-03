@@ -1,20 +1,14 @@
 using Fusion;
 using UnityEngine;
 
-
+[RequireComponent(typeof(NetworkTransform))]
 public class Player : NetworkBehaviour
 {
     [SerializeField] GameObject ballPrefab;
-    [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float maxMoveSpeed = 10f;
+    [SerializeField] float acceleration = 10f;
 
-    [Networked] private TickTimer ballDelay { get; set; }
-
-    private NetworkCharacterController _cc;
-
-    private void Awake()
-    {
-        _cc = GetComponent<NetworkCharacterController>();
-    }
+    Vector3 currentVelocity;
 
     public override void FixedUpdateNetwork()
     {
@@ -22,21 +16,8 @@ public class Player : NetworkBehaviour
         {
             // move player
             data.direction.Normalize();
-            _cc.Move(moveSpeed * Runner.DeltaTime * data.direction);
-            // shoot ball
-            if (HasStateAuthority && ballDelay.ExpiredOrNotRunning(Runner))
-            {
-                if (data.buttons.IsSet(NetworkInputData.MOUSEBUTTON0))
-                {
-                    ballDelay = TickTimer.CreateFromSeconds(Runner, .5f);
-                    Runner.Spawn(ballPrefab, transform.position + Vector3.forward, Quaternion.LookRotation(Vector3.forward), Object.InputAuthority,
-                        (runner, o) => 
-                        { 
-                            o.GetComponent<Ball>().Init(); 
-                        }
-                    );
-                }
-            }
+            currentVelocity = Vector3.Lerp(currentVelocity, data.direction * maxMoveSpeed, acceleration * Runner.DeltaTime);
+            transform.position += currentVelocity * Runner.DeltaTime;
         }
     }
 }
