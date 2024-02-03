@@ -152,6 +152,7 @@ MonoBehaviour:
   ballPrefab: {fileID: 1277456744369637370, guid: efcef3d323a78dd479ac2e5bfd0fe062, type: 3}
   maxMoveSpeed: 15
   acceleration: 30
+  dodgeSpeed: 20
 --- !u!114 &5722041671458183006
 MonoBehaviour:
   m_ObjectHideFlags: 0

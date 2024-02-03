@@ -12,6 +12,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     private NetworkRunner _runner;
     private bool leftClick;
+    private bool shift;
 
     async void StartGame(GameMode mode)
     {
@@ -75,7 +76,8 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     private void Update()
     {
-        leftClick = leftClick | Input.GetMouseButton(0);
+        leftClick |= Input.GetMouseButton(0);
+        shift |= Input.GetKeyDown(KeyCode.LeftShift);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -95,7 +97,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             data.direction += Vector3.right;
 
         data.buttons.Set(NetworkInputData.MOUSEBUTTON0, leftClick);
+        data.buttons.Set(NetworkInputData.SHIFT, shift);
         leftClick = false;
+        shift = false;
 
         input.Set(data);
     }

@@ -7,6 +7,7 @@ public class Player : NetworkBehaviour
     [SerializeField] GameObject ballPrefab;
     [SerializeField] float maxMoveSpeed = 10f;
     [SerializeField] float acceleration = 10f;
+    [SerializeField] float dodgeSpeed = 20f;
 
     Vector3 currentVelocity;
 
@@ -18,6 +19,11 @@ public class Player : NetworkBehaviour
             data.direction.Normalize();
             currentVelocity = Vector3.Lerp(currentVelocity, data.direction * maxMoveSpeed, acceleration * Runner.DeltaTime);
             transform.position += currentVelocity * Runner.DeltaTime;
+
+            if (data.buttons.IsSet(NetworkInputData.SHIFT))
+            {
+                currentVelocity *= dodgeSpeed;
+            }
         }
     }
 }
