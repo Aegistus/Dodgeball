@@ -92,8 +92,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 38299905672818151}
-  - component: {fileID: 387829853380308991}
   - component: {fileID: 364032403517153492}
+  - component: {fileID: 2510233098152399055}
+  - component: {fileID: 387829853380308991}
   - component: {fileID: 5722041671458183006}
   m_Layer: 0
   m_Name: Player
@@ -118,6 +119,37 @@ Transform:
   - {fileID: 1239906794753073626}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &364032403517153492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392969072555337793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21051f94a4e18346a4e0c3a70b267d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMoveSpeed: 15
+  acceleration: 30
+  dodgeSpeed: 20
+--- !u!114 &2510233098152399055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392969072555337793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a10c55760f40044eb309a1e2c8bf7cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupRadius: 10
+  ballLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &387829853380308991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,23 +168,8 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 364032403517153492}
+  - {fileID: 2510233098152399055}
   - {fileID: 5722041671458183006}
---- !u!114 &364032403517153492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1392969072555337793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e21051f94a4e18346a4e0c3a70b267d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ballPrefab: {fileID: 1277456744369637370, guid: efcef3d323a78dd479ac2e5bfd0fe062, type: 3}
-  maxMoveSpeed: 15
-  acceleration: 30
-  dodgeSpeed: 20
 --- !u!114 &5722041671458183006
 MonoBehaviour:
   m_ObjectHideFlags: 0

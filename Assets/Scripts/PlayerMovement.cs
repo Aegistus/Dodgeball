@@ -2,9 +2,8 @@ using Fusion;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkTransform))]
-public class Player : NetworkBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
-    [SerializeField] GameObject ballPrefab;
     [SerializeField] float maxMoveSpeed = 10f;
     [SerializeField] float acceleration = 10f;
     [SerializeField] float dodgeSpeed = 20f;

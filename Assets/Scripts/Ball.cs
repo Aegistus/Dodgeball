@@ -1,23 +1,33 @@
 using Fusion;
+using UnityEngine;
 
+[RequireComponent(typeof(NetworkTransform))]
 public class Ball : NetworkBehaviour
 {
-    [Networked] private TickTimer Life { get; set; }
+    [SerializeField] float throwSpeed = 5f;
 
-    public void Init()
+    [Networked] public bool PickedUp { get; set; } = false;
+    [Networked] private TickTimer Life { get; set; }
+    [Networked] public bool Thrown { get; set; } = false;
+
+    public void Throw()
     {
         Life = TickTimer.CreateFromSeconds(Runner, 5f);
+        Thrown = true;
     }
 
     public override void FixedUpdateNetwork()
     {
-        if (Life.Expired(Runner))
+        if (Thrown)
         {
-            Runner.Despawn(Object);
-        }
-        else
-        {
-            transform.position += 5 * transform.forward * Runner.DeltaTime;
+            if (Life.Expired(Runner))
+            {
+                Runner.Despawn(Object);
+            }
+            else
+            {
+                transform.position += throwSpeed * transform.forward * Runner.DeltaTime;
+            }
         }
     }
 }

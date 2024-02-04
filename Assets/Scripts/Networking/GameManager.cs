@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
+public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     private NetworkRunner _runner;
-    private bool leftClick;
+    private bool spacebar;
     private bool shift;
 
     async void StartGame(GameMode mode)
@@ -76,7 +76,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     private void Update()
     {
-        leftClick |= Input.GetMouseButton(0);
+        spacebar |= Input.GetKeyDown(KeyCode.Space);
         shift |= Input.GetKeyDown(KeyCode.LeftShift);
     }
 
@@ -96,9 +96,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         if (Input.GetKey(KeyCode.D))
             data.direction += Vector3.right;
 
-        data.buttons.Set(NetworkInputData.MOUSEBUTTON0, leftClick);
+        data.buttons.Set(NetworkInputData.SPACEBAR, spacebar);
         data.buttons.Set(NetworkInputData.SHIFT, shift);
-        leftClick = false;
+        spacebar = false;
         shift = false;
 
         input.Set(data);
