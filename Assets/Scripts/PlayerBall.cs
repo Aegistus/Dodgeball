@@ -6,11 +6,17 @@ using Fusion;
 public class PlayerBall : NetworkBehaviour
 {
     //[SerializeField] Ball ballPrefab;
+    [SerializeField] Transform ballHolder;
     [SerializeField] float pickupRadius = 10f;
     [SerializeField] LayerMask ballLayer;
+    [SerializeField] float holdRadius = 2f;
 
+    public Vector3 CurrentAimDirection => currentAimDirection;
+    public Vector3 TargetAimDirection => targetAimDirection;
     public Ball CurrentBall { get; private set; }
 
+    private Vector3 currentAimDirection = Vector3.right;
+    private Vector3 targetAimDirection = Vector3.right;
     Collider[] pickupCheckResults = new Collider[20];
 
     public bool TryPickupBall()
@@ -46,8 +52,45 @@ public class PlayerBall : NetworkBehaviour
         }
         closestBall.PickedUp = true;
         CurrentBall = closestBall;
-        CurrentBall.transform.SetParent(transform);
+        CurrentBall.transform.SetParent(ballHolder);
+        CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
         return true;
+    }
+
+    void ThrowBall()
+    {
+        CurrentBall.transform.LookAt(CurrentBall.transform.position + targetAimDirection);
+        CurrentBall.transform.SetParent(null);
+        CurrentBall.Throw();
+        CurrentBall = null;
+    }
+
+    void CalculateTargetAimDirection(NetworkInputData data)
+    {
+        Vector3 newDirectTarget = Vector3.zero;
+        if (data.buttons.IsSet(NetworkInputData.UP))
+        {
+            newDirectTarget += Vector3.forward;
+        }
+        if (data.buttons.IsSet(NetworkInputData.DOWN))
+        {
+            newDirectTarget += Vector3.back;
+        }
+        if (data.buttons.IsSet(NetworkInputData.LEFT))
+        {
+            newDirectTarget += Vector3.left;
+        }
+        if (data.buttons.IsSet(NetworkInputData.RIGHT))
+        {
+            newDirectTarget += Vector3.right;
+        }
+        newDirectTarget.Normalize();
+        // if direction input changed, set it as new target direction
+        if (newDirectTarget != Vector3.zero)
+        {
+            targetAimDirection = newDirectTarget;
+            print(targetAimDirection);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -62,15 +105,14 @@ public class PlayerBall : NetworkBehaviour
                 }
                 else
                 {
-                    CurrentBall.transform.SetParent(null);
-                    CurrentBall.Throw();
-                    CurrentBall = null;
-                    //Runner.Spawn(ballPrefab,
-                    //    transform.position + transform.forward, Quaternion.LookRotation(transform.forward),
-                    //    Object.InputAuthority
-                    //);
+                    ThrowBall();
                 }
             }
+            CalculateTargetAimDirection(data);
+        }
+        if (CurrentBall != null)
+        {
+            CurrentBall.transform.localPosition = targetAimDirection * holdRadius;
         }
     }
 }

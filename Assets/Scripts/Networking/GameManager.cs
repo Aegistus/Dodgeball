@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner _runner;
     private bool spacebar;
     private bool shift;
+    private bool up;
+    private bool down;
+    private bool left;
+    private bool right;
 
     async void StartGame(GameMode mode)
     {
@@ -78,6 +82,11 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         spacebar |= Input.GetKeyDown(KeyCode.Space);
         shift |= Input.GetKeyDown(KeyCode.LeftShift);
+        up |= Input.GetKeyDown(KeyCode.UpArrow);
+        down |= Input.GetKeyDown(KeyCode.DownArrow);
+        left |= Input.GetKeyDown(KeyCode.LeftArrow);
+        right |= Input.GetKeyDown(KeyCode.RightArrow);
+
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -98,8 +107,16 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
 
         data.buttons.Set(NetworkInputData.SPACEBAR, spacebar);
         data.buttons.Set(NetworkInputData.SHIFT, shift);
+        data.buttons.Set(NetworkInputData.UP, up);
+        data.buttons.Set(NetworkInputData.DOWN, down);
+        data.buttons.Set(NetworkInputData.LEFT, left);
+        data.buttons.Set(NetworkInputData.RIGHT, right);
         spacebar = false;
         shift = false;
+        up = false;
+        down = false;
+        left = false;
+        right = false;
 
         input.Set(data);
     }
