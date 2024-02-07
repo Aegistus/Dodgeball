@@ -10,6 +10,7 @@ public class PlayerBall : NetworkBehaviour
     [SerializeField] float pickupRadius = 10f;
     [SerializeField] LayerMask ballLayer;
     [SerializeField] float holdRadius = 2f;
+    [SerializeField] float aimTurnSpeed = 5f;
 
     public Vector3 CurrentAimDirection => currentAimDirection;
     public Vector3 TargetAimDirection => targetAimDirection;
@@ -59,7 +60,7 @@ public class PlayerBall : NetworkBehaviour
 
     void ThrowBall()
     {
-        CurrentBall.transform.LookAt(CurrentBall.transform.position + targetAimDirection);
+        CurrentBall.transform.LookAt(CurrentBall.transform.position + currentAimDirection);
         CurrentBall.transform.SetParent(null);
         CurrentBall.Throw();
         CurrentBall = null;
@@ -112,7 +113,13 @@ public class PlayerBall : NetworkBehaviour
         }
         if (CurrentBall != null)
         {
-            CurrentBall.transform.localPosition = targetAimDirection * holdRadius;
+            currentAimDirection = Vector3.Lerp(currentAimDirection, targetAimDirection, aimTurnSpeed * Runner.DeltaTime);
+            currentAimDirection.Normalize();
+            CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
+        }
+        else
+        {
+            currentAimDirection = targetAimDirection;
         }
     }
 }
