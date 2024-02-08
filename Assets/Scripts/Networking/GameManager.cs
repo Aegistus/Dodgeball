@@ -66,6 +66,10 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
             // Keep track of the player avatars for easy access
             _spawnedCharacters.Add(player, networkPlayerObject);
+            Team playerTeam = networkPlayerObject.GetComponent<Team>();
+            int teamIndex = TeamManager.GetNextTeam();
+            playerTeam.SetTeam(teamIndex);
+            TeamManager.AddTeamMember(teamIndex);
         }
     }
 

@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 38299905672818151}
   - component: {fileID: 364032403517153492}
   - component: {fileID: 2510233098152399055}
+  - component: {fileID: 733613188760144879}
   - component: {fileID: 387829853380308991}
   - component: {fileID: 5722041671458183006}
   m_Layer: 0
@@ -153,6 +154,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   holdRadius: 2
+  aimTurnSpeed: 5
+--- !u!114 &733613188760144879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392969072555337793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7421ffe64cd6f4c41a18d3223ff07bc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &387829853380308991
 MonoBehaviour:
   m_ObjectHideFlags: 0

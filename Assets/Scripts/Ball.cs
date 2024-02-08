@@ -6,9 +6,9 @@ public class Ball : NetworkBehaviour
 {
     [SerializeField] float throwSpeed = 5f;
 
-    [Networked] public bool PickedUp { get; set; } = false;
+    [HideInInspector][Networked] public bool PickedUp { get; set; } = false;
     [Networked] private TickTimer Life { get; set; }
-    [Networked] public bool Thrown { get; set; } = false;
+    [HideInInspector][Networked] public bool Thrown { get; set; } = false;
 
     public void Throw()
     {

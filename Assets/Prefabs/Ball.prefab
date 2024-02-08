@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047a4b94d0af6754ebd390f121cb95bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwSpeed: 5
+  throwSpeed: 10
   _PickedUp: 0
   _Thrown: 0
 --- !u!135 &2613591325742579920
