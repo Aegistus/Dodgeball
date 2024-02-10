@@ -154,7 +154,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   holdRadius: 2
-  aimTurnSpeed: 5
+  aimTurnSpeed: 10
 --- !u!114 &733613188760144879
 MonoBehaviour:
   m_ObjectHideFlags: 0

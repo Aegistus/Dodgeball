@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.26193914, y: 9.13873, z: -6.978627}
-  m_LocalScale: {x: 1.5374, y: 1.5374, z: 1.5374}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6624783964407320333}
   m_Father: {fileID: 0}
@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   throwSpeed: 10
+  spinMultiplier: 5
   _PickedUp: 0
   _Thrown: 0
 --- !u!114 &2497379015105600425

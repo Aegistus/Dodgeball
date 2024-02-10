@@ -5,10 +5,19 @@ using UnityEngine;
 public class Ball : NetworkBehaviour
 {
     [SerializeField] float throwSpeed = 5f;
+    [SerializeField] float spinMultiplier = 5f;
+
+    Vector3 lastRotation;
+    Vector3 spin;
 
     [HideInInspector][Networked] public bool PickedUp { get; set; } = false;
     [Networked] private TickTimer Life { get; set; }
     [HideInInspector][Networked] public bool Thrown { get; set; } = false;
+
+    public override void Spawned()
+    {
+        lastRotation = transform.eulerAngles;
+    }
 
     public void Throw()
     {
@@ -27,7 +36,14 @@ public class Ball : NetworkBehaviour
             else
             {
                 transform.position += throwSpeed * transform.forward * Runner.DeltaTime;
+                transform.eulerAngles += spinMultiplier * Runner.DeltaTime * spin;
             }
+        }
+        else
+        {
+            spin = transform.eulerAngles - lastRotation;
+            lastRotation = transform.eulerAngles;
+            Debug.LogWarning(spin);
         }
     }
 }

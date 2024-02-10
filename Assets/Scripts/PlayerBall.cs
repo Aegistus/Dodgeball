@@ -16,14 +16,16 @@ public class PlayerBall : NetworkBehaviour
     public Vector3 TargetAimDirection => targetAimDirection;
     public Ball CurrentBall { get; private set; }
 
-    private Vector3 currentAimDirection = Vector3.right;
-    private Vector3 targetAimDirection = Vector3.right;
+    Vector3 currentAimDirection = Vector3.right;
+    Vector3 targetAimDirection = Vector3.right;
     Collider[] pickupCheckResults = new Collider[20];
     Team playerTeam;
 
     public override void Spawned()
     {
         playerTeam = GetComponent<Team>();
+        // set starting aim based on team
+        currentAimDirection = playerTeam.TeamIndex == 1 ? Vector3.right : Vector3.left;
     }
 
     public bool TryPickupBall()
@@ -124,6 +126,7 @@ public class PlayerBall : NetworkBehaviour
             currentAimDirection = Vector3.Lerp(currentAimDirection, targetAimDirection, aimTurnSpeed * Runner.DeltaTime);
             currentAimDirection.Normalize();
             CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
+            CurrentBall.transform.LookAt(CurrentBall.transform.position + currentAimDirection);
         }
         else
         {
