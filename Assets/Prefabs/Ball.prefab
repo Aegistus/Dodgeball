@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1021806685527679843}
   - component: {fileID: 362048186023930917}
+  - component: {fileID: 2497379015105600425}
   - component: {fileID: 2613591325742579920}
   - component: {fileID: 5812095563095761747}
   - component: {fileID: 6432406240796759724}
@@ -51,6 +52,19 @@ MonoBehaviour:
   throwSpeed: 10
   _PickedUp: 0
   _Thrown: 0
+--- !u!114 &2497379015105600425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277456744369637370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7421ffe64cd6f4c41a18d3223ff07bc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TeamIndex: 0
 --- !u!135 &2613591325742579920
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -106,6 +120,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 362048186023930917}
+  - {fileID: 2497379015105600425}
   - {fileID: 5812095563095761747}
 --- !u!1 &6683062305332795901
 GameObject:

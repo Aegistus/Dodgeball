@@ -19,6 +19,12 @@ public class PlayerBall : NetworkBehaviour
     private Vector3 currentAimDirection = Vector3.right;
     private Vector3 targetAimDirection = Vector3.right;
     Collider[] pickupCheckResults = new Collider[20];
+    Team playerTeam;
+
+    public override void Spawned()
+    {
+        playerTeam = GetComponent<Team>();
+    }
 
     public bool TryPickupBall()
     {
@@ -55,6 +61,8 @@ public class PlayerBall : NetworkBehaviour
         CurrentBall = closestBall;
         CurrentBall.transform.SetParent(ballHolder);
         CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
+        Team ballsTeam = CurrentBall.GetComponent<Team>();
+        ballsTeam.SetTeam(playerTeam.TeamIndex);
         return true;
     }
 
