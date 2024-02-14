@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047a4b94d0af6754ebd390f121cb95bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwSpeed: 60
+  throwSpeed: 50
   spinMultiplier: 5
   _PickedUp: 0
   _Thrown: 0
@@ -74,7 +74,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1277456744369637370}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 42fe2b7926e821a47b1ff1679f7a2c7b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -132,9 +132,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 1
+  m_Interpolate: 1
+  m_Constraints: 4
+  m_CollisionDetection: 2
 --- !u!114 &-4710404763994381459
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -25,6 +25,7 @@ public class Ball : NetworkBehaviour
         Life = TickTimer.CreateFromSeconds(Runner, 5f);
         rb.isKinematic = false;
         Thrown = true;
+        rb.AddForce(throwSpeed * transform.forward, ForceMode.VelocityChange);
     }
 
     public override void FixedUpdateNetwork()
@@ -37,9 +38,9 @@ public class Ball : NetworkBehaviour
             }
             else
             {
-                //rb.velocity = throwSpeed * transform.forward; 
-                transform.position += transform.forward * throwSpeed * Time.deltaTime;
-                transform.eulerAngles += spinMultiplier * Runner.DeltaTime * spin;
+                //rb.velocity = throwSpeed * transform.forward;
+                //transform.position += transform.forward * throwSpeed * Time.deltaTime;
+                //transform.eulerAngles += spinMultiplier * Runner.DeltaTime * spin;
             }
         }
         else

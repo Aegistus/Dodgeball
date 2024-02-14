@@ -37,7 +37,6 @@ public class Team : NetworkBehaviour
     public void UpdateTeamColor()
     {
         Material teamMat = TeamManager.GetTeamColor(TeamIndex);
-        print(TeamIndex);
         if (teamMat != null)
         {
             for (int i = 0; i < rends.Length; i++)

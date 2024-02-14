@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using Fusion.Sockets;
 using System;
 using System.Collections;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         // Create the Fusion runner and let it know that we will be providing user input
         _runner = gameObject.AddComponent<NetworkRunner>();
+        gameObject.AddComponent<RunnerSimulatePhysics3D>();
         _runner.ProvideInput = true;
 
         // Create the NetworkSceneInfo from the current scene
