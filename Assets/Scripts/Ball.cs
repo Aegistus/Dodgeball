@@ -37,7 +37,8 @@ public class Ball : NetworkBehaviour
             }
             else
             {
-                rb.velocity = throwSpeed * transform.forward; 
+                //rb.velocity = throwSpeed * transform.forward; 
+                transform.position += transform.forward * throwSpeed * Time.deltaTime;
                 transform.eulerAngles += spinMultiplier * Runner.DeltaTime * spin;
             }
         }

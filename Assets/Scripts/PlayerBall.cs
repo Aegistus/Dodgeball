@@ -71,7 +71,7 @@ public class PlayerBall : NetworkBehaviour
     void ThrowBall()
     {
         CurrentBall.transform.LookAt(CurrentBall.transform.position + currentAimDirection);
-        CurrentBall.transform.SetParent(null);
+        CurrentBall.transform.SetParent(null, true);
         CurrentBall.Throw();
         CurrentBall = null;
     }
