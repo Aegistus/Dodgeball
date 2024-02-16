@@ -9,6 +9,7 @@ public class Ball : NetworkBehaviour
     Vector3 lastRotation;
     Vector3 spin;
     Rigidbody rb;
+    Team team;
 
     [HideInInspector][Networked] public bool PickedUp { get; set; } = false;
     [Networked] private TickTimer Life { get; set; }
@@ -18,6 +19,7 @@ public class Ball : NetworkBehaviour
     {
         lastRotation = transform.eulerAngles;
         rb = GetComponent<Rigidbody>();
+        team = GetComponent<Team>();
     }
 
     public void Throw()
@@ -50,15 +52,23 @@ public class Ball : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Ball ball = collision.gameObject.GetComponent<Ball>();
-        PlayerElimination player = collision.gameObject.GetComponent<PlayerElimination>();
-        if (ball != null)
+        if (Thrown)
         {
-            Runner.Despawn(Object);
-        }
-        else if (player != null)
-        {
-            player.Eliminate();
+            Ball ball = collision.gameObject.GetComponent<Ball>();
+            PlayerElimination player = collision.gameObject.GetComponent<PlayerElimination>();
+            Team otherTeam = collision.gameObject.GetComponentInParent<Team>();
+            if (otherTeam != null && otherTeam.TeamIndex != team.TeamIndex)
+            {
+                if (ball != null)
+                {
+                    Runner.Despawn(Object);
+                }
+                else if (player != null)
+                {
+                    player.Eliminate();
+                    Runner.Despawn(Object);
+                }
+            }
         }
     }
 }

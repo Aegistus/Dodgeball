@@ -1,7 +1,6 @@
 using Fusion;
 using UnityEngine;
 
-[RequireComponent(typeof(NetworkTransform))]
 public class PlayerMovement : NetworkBehaviour
 {
     [SerializeField] float maxMoveSpeed = 10f;
