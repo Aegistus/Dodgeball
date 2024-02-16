@@ -64,12 +64,12 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             // Create a unique position for the player
-            Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.PlayerCount), 0, 0);
+            int teamIndex = TeamManager.GetNextTeam();
+            Vector3 spawnPosition = TeamManager.GetTeamSpawnPoint(teamIndex).position;
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
             // Keep track of the player avatars for easy access
             _spawnedCharacters.Add(player, networkPlayerObject);
             Team playerTeam = networkPlayerObject.GetComponent<Team>();
-            int teamIndex = TeamManager.GetNextTeam();
             playerTeam.SetTeam(teamIndex);
             TeamManager.AddTeamMember(teamIndex);
         }

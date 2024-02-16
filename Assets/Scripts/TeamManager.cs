@@ -9,6 +9,7 @@ public class TeamManager : MonoBehaviour
 
     public Material[] teamColors;
     public BoxCollider[] teamBounds = new BoxCollider[3];
+    public Transform[] teamSpawnPoints;
 
     [HideInInspector] int[] teamMemberCount = new int[teamCount];
 
@@ -42,6 +43,15 @@ public class TeamManager : MonoBehaviour
             return null;
         }
         return Instance.teamBounds[teamIndex];
+    }
+
+    public static Transform GetTeamSpawnPoint(int teamIndex)
+    {
+        if (teamIndex < 0 || teamIndex >= Instance.teamSpawnPoints.Length)
+        {
+            return null;
+        }
+        return Instance.teamSpawnPoints[teamIndex];
     }
 
     public static void AddTeamMember(int teamIndex)
