@@ -65,6 +65,10 @@ public class PlayerBall : NetworkBehaviour
         CurrentBall.transform.SetParent(ballHolder);
         CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
         Team ballsTeam = CurrentBall.GetComponent<Team>();
+        if (HasInputAuthority)
+        {
+            ballsTeam.LocalPlayer = true;
+        }
         ballsTeam.SetTeam(playerTeam.TeamIndex);
         return true;
     }
@@ -107,7 +111,7 @@ public class PlayerBall : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (GetInput(out NetworkInputData data) && HasStateAuthority)
+        if (GetInput(out NetworkInputData data))
         {
             if (data.buttons.IsSet(NetworkInputData.SPACEBAR))
             {

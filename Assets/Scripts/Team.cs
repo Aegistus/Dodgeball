@@ -7,14 +7,16 @@ public class Team : NetworkBehaviour
 {
     [Networked] public int TeamIndex { get; private set; } = 0;
 
-    Renderer[] rends;
+    public bool LocalPlayer { get; set; } = false;
 
+    Renderer[] rends;
     ChangeDetector changeDetector;
 
     public override void Spawned()
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         rends = GetComponentsInChildren<Renderer>();
+        LocalPlayer |= HasInputAuthority;
         UpdateTeamColor();
     }
 
@@ -36,7 +38,15 @@ public class Team : NetworkBehaviour
 
     public void UpdateTeamColor()
     {
-        Material teamMat = TeamManager.GetTeamColor(TeamIndex);
+        Material teamMat;
+        if (LocalPlayer)
+        {
+            teamMat = TeamManager.LocalPlayerColor;
+        }
+        else
+        {
+            teamMat = TeamManager.GetTeamColor(TeamIndex);
+        }
         if (teamMat != null)
         {
             for (int i = 0; i < rends.Length; i++)

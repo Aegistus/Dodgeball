@@ -6,10 +6,12 @@ using Fusion;
 public class TeamManager : MonoBehaviour
 {
     public static TeamManager Instance { get; private set; }
+    public static Material LocalPlayerColor => Instance.localPlayerColor;
 
-    public Material[] teamColors;
-    public BoxCollider[] teamBounds = new BoxCollider[3];
-    public Transform[] teamSpawnPoints;
+    [SerializeField] Material localPlayerColor;
+    [SerializeField] Material[] teamColors;
+    [SerializeField] BoxCollider[] teamBounds = new BoxCollider[3];
+    [SerializeField] Transform[] teamSpawnPoints;
 
     [HideInInspector] int[] teamMemberCount = new int[teamCount];
 

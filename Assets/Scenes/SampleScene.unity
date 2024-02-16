@@ -1254,6 +1254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a292311cd949c46a73717171293b33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localPlayerColor: {fileID: 2100000, guid: a6cbb5c42b11d4c4dba9eb59be0823ce, type: 2}
   teamColors:
   - {fileID: 2100000, guid: 4acf40ad6b2230c4f8b79ed5c166d6f1, type: 2}
   - {fileID: 2100000, guid: 3c67deca39230574888ef451a0d06f4a, type: 2}

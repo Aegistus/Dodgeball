@@ -33,7 +33,14 @@ public class Ball : NetworkBehaviour
             {
                 GameObject particleObject = PoolManager.SpawnObject("Explosion_Particle", transform.position, transform.rotation);
                 Renderer rend = particleObject.GetComponent<Renderer>();
-                rend.material = TeamManager.GetTeamColor(team.TeamIndex);
+                if (team.LocalPlayer)
+                {
+                    rend.material = TeamManager.LocalPlayerColor;
+                }
+                else
+                {
+                    rend.material = TeamManager.GetTeamColor(team.TeamIndex);
+                }
                 Runner.Despawn(Object);
             }
         }
