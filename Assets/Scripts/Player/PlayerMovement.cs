@@ -3,13 +3,19 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    [SerializeField] float maxMoveSpeed = 10f;
-    [SerializeField] float acceleration = 10f;
+    [SerializeField] float moveSpeed = 15f;
     [SerializeField] float dodgeSpeed = 20f;
+    [SerializeField] float dodgeDuration = 1f;
+    [SerializeField] float dodgeCooldown = 3f;
+
+    bool isDodging = false;
 
     Vector3 currentVelocity;
     BoxCollider teamBoundCollider;
     Rigidbody rb;
+    TickTimer dodgeDurationTimer;
+    TickTimer dodgeCooldownTimer;
+    Vector3 dodgeDirection;
 
     public override void Spawned()
     {
@@ -25,21 +31,35 @@ public class PlayerMovement : NetworkBehaviour
         }
         if (GetInput(out NetworkInputData data))
         {
-            // move player
             data.direction.Normalize();
-            currentVelocity = maxMoveSpeed * Runner.DeltaTime * data.direction;
 
-            //rb.velocity = currentVelocity;
+            if (data.buttons.IsSet(NetworkInputData.SHIFT) && !isDodging && dodgeCooldownTimer.ExpiredOrNotRunning(Runner))
+            {
+                isDodging = true;
+                dodgeDurationTimer = TickTimer.CreateFromSeconds(Runner, dodgeDuration);
+                dodgeCooldownTimer = TickTimer.CreateFromSeconds(Runner, dodgeCooldown);
+                dodgeDirection = data.direction;
+            }
+            if (dodgeDurationTimer.Expired(Runner))
+            {
+                isDodging = false;
+            }
+
+            // move player
+            currentVelocity = moveSpeed * Runner.DeltaTime * data.direction;
+            // apply dodge
+            if (isDodging)
+            {
+                currentVelocity += dodgeSpeed * Runner.DeltaTime * dodgeDirection;
+            }
+            // prevent player from exiting play area
             if (!teamBoundCollider.bounds.Contains(transform.position + currentVelocity))
             {
                 return;
             }
+
             rb.MovePosition(transform.position + currentVelocity);
 
-            if (data.buttons.IsSet(NetworkInputData.SHIFT))
-            {
-                currentVelocity *= dodgeSpeed;
-            }
         }
     }
 }

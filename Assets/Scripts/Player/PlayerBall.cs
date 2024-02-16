@@ -13,13 +13,14 @@ public class PlayerBall : NetworkBehaviour
 
     public Vector3 CurrentAimDirection => currentAimDirection;
     public Vector3 TargetAimDirection => targetAimDirection;
-    public Ball CurrentBall { get; private set; }
+    [Networked] public Ball CurrentBall { get; set; }
 
     Vector3 currentAimDirection = Vector3.right;
     Vector3 targetAimDirection = Vector3.right;
     Vector3 defaultAimDirection;
     Collider[] pickupCheckResults = new Collider[20];
     Team playerTeam;
+    ChangeDetector ballChangeDetector;
 
     public override void Spawned()
     {
@@ -27,6 +28,23 @@ public class PlayerBall : NetworkBehaviour
         // set starting aim based on team
         defaultAimDirection = playerTeam.TeamIndex == 1 ? Vector3.right : Vector3.left;
         currentAimDirection = defaultAimDirection;
+        ballChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+    }
+
+    public override void Render()
+    {
+        foreach (var change in ballChangeDetector.DetectChanges(this))
+        {
+            if (change == nameof(CurrentBall))
+            {
+                if (CurrentBall != null && playerTeam.LocalPlayer)
+                {
+                    Team ballsTeam = CurrentBall.GetComponent<Team>();
+                    ballsTeam.LocalPlayer = true;
+                    ballsTeam.UpdateTeamColor();
+                }
+            }
+        }
     }
 
     public bool TryPickupBall()
@@ -65,7 +83,7 @@ public class PlayerBall : NetworkBehaviour
         CurrentBall.transform.SetParent(ballHolder);
         CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
         Team ballsTeam = CurrentBall.GetComponent<Team>();
-        if (HasInputAuthority)
+        if (playerTeam.LocalPlayer)
         {
             ballsTeam.LocalPlayer = true;
         }
@@ -111,7 +129,7 @@ public class PlayerBall : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (GetInput(out NetworkInputData data))
+        if (GetInput(out NetworkInputData data) && HasStateAuthority)
         {
             if (data.buttons.IsSet(NetworkInputData.SPACEBAR))
             {
