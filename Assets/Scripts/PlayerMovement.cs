@@ -15,8 +15,9 @@ public class PlayerMovement : NetworkBehaviour
         {
             // move player
             data.direction.Normalize();
-            currentVelocity = Vector3.Lerp(currentVelocity, data.direction * maxMoveSpeed, acceleration * Runner.DeltaTime);
-            transform.position += currentVelocity * Runner.DeltaTime;
+            currentVelocity = maxMoveSpeed * Runner.DeltaTime * data.direction;
+
+            transform.position += currentVelocity;
 
             if (data.buttons.IsSet(NetworkInputData.SHIFT))
             {
