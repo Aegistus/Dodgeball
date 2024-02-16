@@ -37,7 +37,9 @@ public class PlayerElimination : NetworkBehaviour
     {
         Team team = GetComponent<Team>();
         TeamManager.RemoveTeamMember(team.TeamIndex);
-        PoolManager.SpawnObject("Explosion_Particle", transform.position, transform.rotation);
+        GameObject particleObject = PoolManager.SpawnObject("Explosion_Particle", transform.position, transform.rotation);
+        Renderer rend = particleObject.GetComponent<Renderer>();
+        rend.material = TeamManager.GetTeamColor(team.TeamIndex);
         gameObject.SetActive(false);
     }
 

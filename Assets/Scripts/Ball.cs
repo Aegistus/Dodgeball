@@ -31,7 +31,9 @@ public class Ball : NetworkBehaviour
         {
             if (change == nameof(ScheduledDestroy))
             {
-                PoolManager.SpawnObject("Explosion_Particle", transform.position, transform.rotation);
+                GameObject particleObject = PoolManager.SpawnObject("Explosion_Particle", transform.position, transform.rotation);
+                Renderer rend = particleObject.GetComponent<Renderer>();
+                rend.material = TeamManager.GetTeamColor(team.TeamIndex);
                 Runner.Despawn(Object);
             }
         }
