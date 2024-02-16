@@ -5,7 +5,6 @@ using Fusion;
 
 public class PlayerBall : NetworkBehaviour
 {
-    //[SerializeField] Ball ballPrefab;
     [SerializeField] Transform ballHolder;
     [SerializeField] float pickupRadius = 10f;
     [SerializeField] LayerMask ballLayer;
@@ -18,6 +17,7 @@ public class PlayerBall : NetworkBehaviour
 
     Vector3 currentAimDirection = Vector3.right;
     Vector3 targetAimDirection = Vector3.right;
+    Vector3 defaultAimDirection;
     Collider[] pickupCheckResults = new Collider[20];
     Team playerTeam;
 
@@ -25,7 +25,8 @@ public class PlayerBall : NetworkBehaviour
     {
         playerTeam = GetComponent<Team>();
         // set starting aim based on team
-        currentAimDirection = playerTeam.TeamIndex == 1 ? Vector3.right : Vector3.left;
+        defaultAimDirection = playerTeam.TeamIndex == 1 ? Vector3.right : Vector3.left;
+        currentAimDirection = defaultAimDirection;
     }
 
     public bool TryPickupBall()

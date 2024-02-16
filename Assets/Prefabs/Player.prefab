@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 364032403517153492}
   - component: {fileID: 2510233098152399055}
   - component: {fileID: 733613188760144879}
+  - component: {fileID: 6685587638202290336}
   - component: {fileID: 387829853380308991}
   - component: {fileID: 5722041671458183006}
   m_Layer: 0
@@ -149,7 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballHolder: {fileID: 113637604552137114}
-  throwForce: 1000
   pickupRadius: 10
   ballLayer:
     serializedVersion: 2
@@ -169,6 +169,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TeamIndex: 0
+--- !u!114 &6685587638202290336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392969072555337793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c08dc1683afcf49bdf54d7eef8ea00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &387829853380308991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,6 +201,7 @@ MonoBehaviour:
   - {fileID: 364032403517153492}
   - {fileID: 2510233098152399055}
   - {fileID: 733613188760144879}
+  - {fileID: 6685587638202290336}
   - {fileID: 5722041671458183006}
   - {fileID: 6459133124346887549}
 --- !u!114 &5722041671458183006

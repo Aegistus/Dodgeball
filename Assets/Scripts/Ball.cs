@@ -38,15 +38,27 @@ public class Ball : NetworkBehaviour
             }
             else
             {
-                //rb.velocity = throwSpeed * transform.forward;
-                //transform.position += transform.forward * throwSpeed * Time.deltaTime;
-                //transform.eulerAngles += spinMultiplier * Runner.DeltaTime * spin;
+                transform.eulerAngles += spinMultiplier * Runner.DeltaTime * spin;
             }
         }
         else
         {
             spin = transform.eulerAngles - lastRotation;
             lastRotation = transform.eulerAngles;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Ball ball = collision.gameObject.GetComponent<Ball>();
+        PlayerElimination player = collision.gameObject.GetComponent<PlayerElimination>();
+        if (ball != null)
+        {
+            Runner.Despawn(Object);
+        }
+        else if (player != null)
+        {
+            player.Eliminate();
         }
     }
 }
