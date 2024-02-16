@@ -6,20 +6,35 @@ public class Ball : NetworkBehaviour
     [SerializeField] float throwSpeed = 5f;
     [SerializeField] float spinMultiplier = 5f;
 
+    [HideInInspector][Networked] public bool PickedUp { get; set; } = false;
+    [Networked] private TickTimer Life { get; set; }
+    [HideInInspector][Networked] public bool Thrown { get; set; } = false;
+    [HideInInspector] [Networked] public bool ScheduledDestroy { get; set; } = false;
+
     Vector3 lastRotation;
     Vector3 spin;
     Rigidbody rb;
     Team team;
-
-    [HideInInspector][Networked] public bool PickedUp { get; set; } = false;
-    [Networked] private TickTimer Life { get; set; }
-    [HideInInspector][Networked] public bool Thrown { get; set; } = false;
+    ChangeDetector changeDetector;
 
     public override void Spawned()
     {
         lastRotation = transform.eulerAngles;
         rb = GetComponent<Rigidbody>();
         team = GetComponent<Team>();
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+    }
+
+    public override void Render()
+    {
+        foreach (var change in changeDetector.DetectChanges(this))
+        {
+            if (change == nameof(ScheduledDestroy))
+            {
+                PoolManager.SpawnObject("Explosion_Particle", transform.position, transform.rotation);
+                Runner.Despawn(Object);
+            }
+        }
     }
 
     public void Throw()
@@ -36,7 +51,7 @@ public class Ball : NetworkBehaviour
         {
             if (Life.Expired(Runner))
             {
-                Runner.Despawn(Object);
+                DestroyBall();
             }
             else
             {
@@ -61,14 +76,19 @@ public class Ball : NetworkBehaviour
             {
                 if (ball != null)
                 {
-                    Runner.Despawn(Object);
+                    DestroyBall();
                 }
                 else if (player != null)
                 {
                     player.Eliminate();
-                    Runner.Despawn(Object);
+                    DestroyBall();
                 }
             }
         }
+    }
+
+    void DestroyBall()
+    {
+        ScheduledDestroy = true;
     }
 }
