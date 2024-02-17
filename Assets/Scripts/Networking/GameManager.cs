@@ -79,6 +79,8 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (_spawnedCharacters.TryGetValue(player, out NetworkObject networkObject))
         {
+            Team playerTeam = networkObject.GetComponent<Team>();
+            TeamManager.RemoveTeamMember(playerTeam.TeamIndex);
             runner.Despawn(networkObject);
             _spawnedCharacters.Remove(player);
         }
