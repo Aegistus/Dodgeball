@@ -2,14 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using System;
 
 public class PlayerElimination : NetworkBehaviour
 {
-    [Networked] bool nAlive { get; set; } = true;
+    // this network object and team index
+    public static event Action<NetworkObject, int> OnElimination;
 
-    public bool Alive => nAlive;
+    [Networked] public bool Alive { get; set; } = true;
 
     ChangeDetector changeDetector;
+
+    private void Update()
+    {
+        if (HasInputAuthority && Application.isEditor)
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                Alive = false;
+            }
+        }
+    }
 
     public override void Spawned()
     {
@@ -20,17 +33,11 @@ public class PlayerElimination : NetworkBehaviour
     {
         foreach (var change in changeDetector.DetectChanges(this))
         {
-            if (change == nameof(nAlive))
+            if (change == nameof(Alive))
             {
                 RemovePlayer();
             }
         }
-    }
-
-    public void Eliminate()
-    {
-        nAlive = false;
-        print("You have been eliminated");
     }
 
     void RemovePlayer()
@@ -47,8 +54,9 @@ public class PlayerElimination : NetworkBehaviour
         {
             rend.material = TeamManager.GetTeamColor(team.TeamIndex);
         }
-        gameObject.SetActive(false);
+        NetworkObject netObj = GetComponent<NetworkObject>();
+        OnElimination?.Invoke(netObj, team.TeamIndex);
+        Runner.Despawn(netObj);
     }
-
     
 }

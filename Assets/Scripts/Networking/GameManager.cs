@@ -6,11 +6,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Unity.Collections.Unicode;
 
 public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
+    private Dictionary<NetworkObject, PlayerRef> objToPlayer = new Dictionary<NetworkObject, PlayerRef>();
     private NetworkRunner _runner;
     private bool spacebar;
     private bool shift;
@@ -42,6 +44,7 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
+        PlayerElimination.OnElimination += RespawnPlayer;
     }
 
     private void OnGUI()
@@ -69,6 +72,7 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
             // Keep track of the player avatars for easy access
             _spawnedCharacters.Add(player, networkPlayerObject);
+            objToPlayer.Add(networkPlayerObject, player);
             Team playerTeam = networkPlayerObject.GetComponent<Team>();
             playerTeam.SetTeam(teamIndex);
             TeamManager.AddTeamMember(teamIndex);
@@ -83,7 +87,24 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
             TeamManager.RemoveTeamMember(playerTeam.TeamIndex);
             runner.Despawn(networkObject);
             _spawnedCharacters.Remove(player);
+            objToPlayer.Remove(networkObject);
         }
+    }
+
+    void RespawnPlayer(NetworkObject playerObj, int teamIndex)
+    {
+        print("Respawning");
+        PlayerRef player = objToPlayer[playerObj];
+        _spawnedCharacters.Remove(player);
+        objToPlayer.Remove(playerObj);
+        Vector3 spawnPosition = TeamManager.GetTeamSpawnPoint(teamIndex).position;
+        NetworkObject networkPlayerObject = _runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
+        // Keep track of the player avatars for easy access
+        _spawnedCharacters.Add(player, networkPlayerObject);
+        objToPlayer.Add(networkPlayerObject, player);
+        Team playerTeam = networkPlayerObject.GetComponent<Team>();
+        playerTeam.SetTeam(teamIndex);
+        TeamManager.AddTeamMember(teamIndex);
     }
 
     private void Update()

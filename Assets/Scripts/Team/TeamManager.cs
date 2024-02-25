@@ -13,7 +13,7 @@ public class TeamManager : MonoBehaviour
     [SerializeField] BoxCollider[] teamBounds = new BoxCollider[3];
     [SerializeField] Transform[] teamSpawnPoints;
 
-    [HideInInspector] int[] teamMemberCount = new int[teamCount];
+    int[] teamMemberCount = new int[teamCount];
 
     static readonly int teamCount = 3;
 

@@ -89,7 +89,7 @@ public class Ball : NetworkBehaviour
                 }
                 else if (player != null)
                 {
-                    player.Eliminate();
+                    player.Alive = false;
                     DestroyBall();
                 }
             }
