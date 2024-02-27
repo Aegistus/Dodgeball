@@ -68,14 +68,7 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             // Create a unique position for the player
             int teamIndex = TeamManager.GetNextTeam();
-            Vector3 spawnPosition = TeamManager.GetTeamSpawnPoint(teamIndex).position;
-            NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
-            // Keep track of the player avatars for easy access
-            _spawnedCharacters.Add(player, networkPlayerObject);
-            objToPlayer.Add(networkPlayerObject, player);
-            Team playerTeam = networkPlayerObject.GetComponent<Team>();
-            playerTeam.SetTeam(teamIndex);
-            TeamManager.AddTeamMember(teamIndex);
+            SpawnPlayer(player, teamIndex);
         }
     }
 
@@ -91,12 +84,8 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    void RespawnPlayer(NetworkObject playerObj, int teamIndex)
+    void SpawnPlayer(PlayerRef player, int teamIndex)
     {
-        print("Respawning");
-        PlayerRef player = objToPlayer[playerObj];
-        _spawnedCharacters.Remove(player);
-        objToPlayer.Remove(playerObj);
         Vector3 spawnPosition = TeamManager.GetTeamSpawnPoint(teamIndex).position;
         NetworkObject networkPlayerObject = _runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
         // Keep track of the player avatars for easy access
@@ -105,6 +94,20 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
         Team playerTeam = networkPlayerObject.GetComponent<Team>();
         playerTeam.SetTeam(teamIndex);
         TeamManager.AddTeamMember(teamIndex);
+        // Make player temporarily invincible
+        networkPlayerObject.GetComponent<PlayerElimination>().Invincible = true;
+    }
+
+    void RespawnPlayer(NetworkObject playerObj, int teamIndex)
+    {
+        if (_runner.IsServer)
+        {
+            print("Respawning");
+            PlayerRef player = objToPlayer[playerObj];
+            _spawnedCharacters.Remove(player);
+            objToPlayer.Remove(playerObj);
+            SpawnPlayer(player, teamIndex);
+        }
     }
 
     private void Update()
