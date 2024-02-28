@@ -58,7 +58,7 @@ public class PlayerBall : NetworkBehaviour
         for (int i = 0; i < hitCount; i++)
         {
             Ball ball = pickupCheckResults[i].GetComponentInParent<Ball>();
-            if (ball != null && !ball.Thrown)
+            if (ball != null && !ball.Thrown && !ball.PickedUp)
             {
                 inRange.Add(ball);
             }
