@@ -9,27 +9,34 @@ public class ScoreUI : NetworkBehaviour
     [SerializeField] TMP_Text scoreText;
     [SerializeField] int teamIndex = 0;
 
-    ChangeDetector changeDet;
-    GameManager gameManager;
+    bool initialized = false;
 
     public override void Spawned()
     {
-        changeDet = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        gameManager = FindObjectOfType<GameManager>();
+        GameManager.OnScoreChange += UpdateScore;
     }
 
     public override void Render()
     {
-        foreach (var change in changeDet.DetectChanges(gameManager))
+        if (!initialized)
         {
-            if (change == nameof(gameManager.BlueScore) && teamIndex == 1)
+            if (teamIndex == 1)
             {
-                scoreText.text = gameManager.BlueScore + "";
+                scoreText.text = GameManager.Current.BlueScore + "";
             }
-            else if (change == nameof(gameManager.RedScore) && teamIndex == 2)
+            else if (teamIndex == 2)
             {
-                scoreText.text = gameManager.RedScore + "";
+                scoreText.text = GameManager.Current.RedScore + "";
             }
+            initialized = true;
+        }
+    }
+
+    void UpdateScore(int teamIndex, int score)
+    {
+        if (this.teamIndex == teamIndex)
+        {
+            scoreText.text = score + "";
         }
     }
 }
