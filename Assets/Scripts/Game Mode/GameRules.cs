@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[CreateAssetMenu(fileName = "NewGameRules", menuName = "Game Rules")]
-public class GameRules : ScriptableObject
+[Serializable]
+public class GameRules
 {
-    [Serializable]
     public enum WinCondition
     {
         LastTeamStanding, Points
     }
 
+    public WinCondition winCondition;
     public bool playerRespawns = true;
+    public float playerRespawnTime = 6f;
     public bool timerEnabled = false;
     public float maxGameTime = 180f;
     public bool ballRespawns = true;
