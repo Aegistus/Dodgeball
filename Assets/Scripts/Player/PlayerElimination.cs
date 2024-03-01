@@ -35,6 +35,10 @@ public class PlayerElimination : NetworkBehaviour
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         playerRenderer = GetComponentInChildren<Renderer>();
+        if (Invincible)
+        {
+            MakeInvincible();
+        }
     }
 
     public override void Render()
@@ -73,7 +77,6 @@ public class PlayerElimination : NetworkBehaviour
             yield return new WaitForSeconds(invincibilityTransparentInterval);
             c.a = 1f;
             playerRenderer.material.color = c;
-            print("TEST");
             yield return new WaitForSeconds(invincibilityOpaqueInterval);
         }
     }
