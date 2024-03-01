@@ -9,6 +9,8 @@ public class PlayerElimination : NetworkBehaviour
     // this network object and team index
     public static event Action<NetworkObject, int> OnElimination;
     public static float invincibilityTime = 3f;
+    public static float invincibilityTransparentInterval = .2f;
+    public static float invincibilityOpaqueInterval = .2f;
     public static float invincibilityAlphaAmount = .1f;
 
     [Networked] public bool Alive { get; set; } = true;
@@ -16,6 +18,7 @@ public class PlayerElimination : NetworkBehaviour
 
     ChangeDetector changeDetector;
     TickTimer invincibilityTimer;
+    Renderer playerRenderer;
 
     private void Update()
     {
@@ -31,6 +34,7 @@ public class PlayerElimination : NetworkBehaviour
     public override void Spawned()
     {
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        playerRenderer = GetComponentInChildren<Renderer>();
     }
 
     public override void Render()
@@ -59,6 +63,21 @@ public class PlayerElimination : NetworkBehaviour
         }
     }
 
+    IEnumerator InvincibilityFlashCoroutine()
+    {
+        Color c = playerRenderer.material.color;
+        while (Invincible)
+        {
+            c.a = invincibilityAlphaAmount;
+            playerRenderer.material.color = c;
+            yield return new WaitForSeconds(invincibilityTransparentInterval);
+            c.a = 1f;
+            playerRenderer.material.color = c;
+            print("TEST");
+            yield return new WaitForSeconds(invincibilityOpaqueInterval);
+        }
+    }
+
     void RemovePlayer()
     {
         Team team = GetComponent<Team>();
@@ -82,21 +101,17 @@ public class PlayerElimination : NetworkBehaviour
     {
         print("INVINCIBLE");
         invincibilityTimer = TickTimer.CreateFromSeconds(Runner, invincibilityTime);
-        Renderer rend = GetComponentInChildren<Renderer>();
-        Color c = rend.material.color;
-        c.a = invincibilityAlphaAmount;
-        rend.material.color = c;
         Collider collider = GetComponent<Collider>();
         collider.enabled = false;
+        StartCoroutine(InvincibilityFlashCoroutine());
     }
 
     void RemoveInvincibility()
     {
         print("NOT INVINCIBLE");
-        Renderer rend = GetComponentInChildren<Renderer>();
-        Color c = rend.material.color;
+        Color c = playerRenderer.material.color;
         c.a = 1;
-        rend.material.color = c;
+        playerRenderer.material.color = c;
         Collider collider = GetComponent<Collider>();
         collider.enabled = true;
     }
