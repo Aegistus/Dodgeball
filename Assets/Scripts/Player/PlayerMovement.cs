@@ -1,8 +1,13 @@
 using Fusion;
+using System;
 using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    public float MaxDodgeCooldown => dodgeCooldown;
+    public float CurrentDodgeCooldown => dodgeCooldownTimer.RemainingTime(Runner) ?? dodgeCooldown;
+    public bool IsDodging => isDodging;
+
     [SerializeField] float moveSpeed = 15f;
     [SerializeField] float dodgeSpeed = 20f;
     [SerializeField] float dodgeDuration = 1f;
@@ -59,7 +64,6 @@ public class PlayerMovement : NetworkBehaviour
             }
 
             rb.MovePosition(transform.position + currentVelocity);
-
         }
     }
 }

@@ -9,6 +9,9 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
+    public static NetworkManager Current { get; private set; }
+    public NetworkRunner Runner => _runner;
+
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     private Dictionary<NetworkObject, PlayerRef> objToPlayer = new Dictionary<NetworkObject, PlayerRef>();
@@ -19,6 +22,14 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool down;
     private bool left;
     private bool right;
+
+    void Awake()
+    {
+        if (Current == null)
+        {
+            Current = this;
+        }
+    }
 
     async void StartGame(GameMode mode)
     {
@@ -117,7 +128,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         down |= Input.GetKeyDown(KeyCode.DownArrow);
         left |= Input.GetKeyDown(KeyCode.LeftArrow);
         right |= Input.GetKeyDown(KeyCode.RightArrow);
-
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
