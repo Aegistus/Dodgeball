@@ -13,7 +13,7 @@ public class HitEnter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.KeypadEnter))
         {
             // Scene changes to Lobby
         }
