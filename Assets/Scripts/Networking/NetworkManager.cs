@@ -12,9 +12,11 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public static NetworkManager Current { get; private set; }
     public NetworkRunner Runner => _runner;
 
+    [SerializeField] string gameSceneName = "SampleScene";
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     private Dictionary<NetworkObject, PlayerRef> objToPlayer = new Dictionary<NetworkObject, PlayerRef>();
+    private Dictionary<PlayerRef, string> playerNames = new Dictionary<PlayerRef, string>();
     private NetworkRunner _runner;
     private bool spacebar;
     private bool shift;
@@ -23,23 +25,31 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool left;
     private bool right;
 
+    public string PlayerName { get; set; } = "";
+
     void Awake()
     {
         if (Current == null)
         {
             Current = this;
+		    DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 
-    async void StartGame(GameMode mode)
+    public async void StartGame(GameMode mode)
     {
+        SceneManager.LoadScene(gameSceneName);
         // Create the Fusion runner and let it know that we will be providing user input
         _runner = gameObject.AddComponent<NetworkRunner>();
         gameObject.AddComponent<RunnerSimulatePhysics3D>();
         _runner.ProvideInput = true;
 
         // Create the NetworkSceneInfo from the current scene
-        var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
+        var scene = SceneRef.FromIndex(SceneManager.GetSceneByName(gameSceneName).buildIndex);
         var sceneInfo = new NetworkSceneInfo();
         if (scene.IsValid)
         {
@@ -57,20 +67,20 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         PlayerElimination.OnElimination += RespawnPlayer;
     }
 
-    private void OnGUI()
-    {
-        if (_runner == null)
-        {
-            if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
-            {
-                StartGame(GameMode.Host);
-            }
-            if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
-            {
-                StartGame(GameMode.Client);
-            }
-        }
-    }
+    //private void OnGUI()
+    //{
+    //    if (_runner == null)
+    //    {
+    //        if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
+    //        {
+    //            StartGame(GameMode.Host);
+    //        }
+    //        if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
+    //        {
+    //            StartGame(GameMode.Client);
+    //        }
+    //    }
+    //}
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -101,6 +111,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         // Keep track of the player avatars for easy access
         _spawnedCharacters.Add(player, networkPlayerObject);
         objToPlayer.Add(networkPlayerObject, player);
+        // Set player name
+        PlayerName name = networkPlayerObject.GetComponent<PlayerName>();
+        name.SetName(PlayerName);
+        // Set player team
         Team playerTeam = networkPlayerObject.GetComponent<Team>();
         playerTeam.SetTeam(teamIndex);
         TeamManager.AddTeamMember(teamIndex);
