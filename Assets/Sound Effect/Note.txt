@@ -1,0 +1,9 @@
+All sounds are freely downloaded from Pixabay at https://pixabay.com/ - No specific website for each sound, they are all one-button downloadable on the list.
+
+These sounds are candidates of each category, so we'll discuss to choose or add other sound source if needed. Please let me know if I missed any category like UI, menu-selecting, game losing, or etc.
+I understand the game theme but I'm not sure if it's appropriate with 8-bit sounds or Groovy musics I chose.
+
+Some are containing multiple sound effects - I can cut it out the part we need.
+'Ouch' sound when the ball hit would be according to when you couldn't dodge the wrench. But generally it's good to use ball explosion.
+
+Further we'll soon wrap this up, so let me know any sound updates needed. If we chose/revise them all correctly, I'll start put those in the project.
