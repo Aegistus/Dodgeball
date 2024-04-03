@@ -25,7 +25,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool left;
     private bool right;
 
-    public string PlayerName { get; set; } = "";
+    public string LocalPlayerName { get; set; } = "";
 
     void Awake()
     {
@@ -64,6 +64,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
+        playerNames.Add(_runner.LocalPlayer, LocalPlayerName);
         PlayerElimination.OnElimination += RespawnPlayer;
     }
 
@@ -82,11 +83,16 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     //    }
     //}
 
+    [Rpc(sources: RpcSources.InputAuthority, targets:RpcTargets.StateAuthority)]
+    void AddPlayerName(PlayerRef playerRef, string name)
+    {
+        playerNames.Add(playerRef, name);
+    }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
         {
-            // Create a unique position for the player
             int teamIndex = TeamManager.GetNextTeam();
             SpawnPlayer(player, teamIndex);
         }
@@ -111,9 +117,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         // Keep track of the player avatars for easy access
         _spawnedCharacters.Add(player, networkPlayerObject);
         objToPlayer.Add(networkPlayerObject, player);
-        // Set player name
-        PlayerName name = networkPlayerObject.GetComponent<PlayerName>();
-        name.SetName(PlayerName);
         // Set player team
         Team playerTeam = networkPlayerObject.GetComponent<Team>();
         playerTeam.SetTeam(teamIndex);

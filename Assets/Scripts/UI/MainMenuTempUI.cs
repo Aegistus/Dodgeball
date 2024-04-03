@@ -38,7 +38,7 @@ public class MainMenuTempUI : MonoBehaviour
 
     public void SetPlayerName(string name)
     {
-        netManager.PlayerName = name;
+        netManager.LocalPlayerName = name;
     }
 
     public void StartGame()
