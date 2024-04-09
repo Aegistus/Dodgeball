@@ -63,8 +63,8 @@ public class SoundManager : MonoBehaviour
 		sound.source.clip = sound.GetRandomAudioClip();
 		sound.source.volume = sound.volume * (1f + UnityEngine.Random.Range(-sound.volumeVariance / 2f, sound.volumeVariance / 2f));
 		sound.source.pitch = sound.pitch * (1f + UnityEngine.Random.Range(-sound.pitchVariance / 2f, sound.pitchVariance / 2f));
-
-		sound.source.Play();
+        
+        sound.source.Play();
 		return sound.source;
 	}
 
@@ -86,7 +86,7 @@ public class SoundManager : MonoBehaviour
 			return null;
 		}
 		Sound sound = sounds[soundID];
-
+		sound.volume = 10f;	/* Setting volume isn't working? WIP */
 		PositionalAudioSource source = positionalSources.Dequeue();
 		source.SetSound(sound);
 		source.transform.position = position;

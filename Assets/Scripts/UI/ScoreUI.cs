@@ -37,6 +37,7 @@ public class ScoreUI : NetworkBehaviour
         if (this.teamIndex == teamIndex)
         {
             scoreText.text = score + "";
+            SoundManager.Instance.PlaySoundAtPosition("Ball_Bounce", scoreText.transform.position);
         }
     }
 }

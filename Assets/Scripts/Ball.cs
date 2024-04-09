@@ -23,6 +23,7 @@ public class Ball : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         team = GetComponent<Team>();
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        SoundManager.Instance.PlaySoundAtPosition("Ball_Respawn", transform.position);
     }
 
     public override void Render()
@@ -76,11 +77,14 @@ public class Ball : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Kim's note: Tried to implement ball-bounce sound (to the wall),
+        // but realized if all those balls making noises, that would be too massive.
         if (Thrown)
         {
             Ball ball = collision.gameObject.GetComponent<Ball>();
             PlayerElimination player = collision.gameObject.GetComponent<PlayerElimination>();
             Team otherTeam = collision.gameObject.GetComponentInParent<Team>();
+            
             if (otherTeam != null && otherTeam.TeamIndex != team.TeamIndex)
             {
                 if (ball != null)
@@ -91,6 +95,7 @@ public class Ball : NetworkBehaviour
                 {
                     player.Alive = false;
                     DestroyBall();
+                    SoundManager.Instance.PlaySoundAtPosition("Ball_Explosion", transform.position);
                 }
             }
         }

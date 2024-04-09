@@ -47,6 +47,12 @@ public class MainMenuTempUI : MonoBehaviour
         netManager.StartGame(gameMode);
     }
 
+    public void BackToMenu()
+    {
+        startMenu.SetActive(true);
+        loginMenu.SetActive(false);
+    }
+
     public void QuitGame()
     {
         Application.Quit();
