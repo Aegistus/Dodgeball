@@ -12,8 +12,8 @@ public class PlayerBall : NetworkBehaviour
     [SerializeField] float aimTurnSpeed = 5f;
 
     [Networked] public Ball CurrentBall { get; set; }
+    [Networked] public float CurrentAimAngle { get; set; } = 0;
 
-    float currentAimAngle = 0;
     float defaultAimAngle;
     Collider[] pickupCheckResults = new Collider[20];
     Team playerTeam;
@@ -24,7 +24,7 @@ public class PlayerBall : NetworkBehaviour
         playerTeam = GetComponent<Team>();
         // set starting aim based on team
         defaultAimAngle = playerTeam.TeamIndex == 1 ? 90 : 270;
-        currentAimAngle = defaultAimAngle;
+        CurrentAimAngle = defaultAimAngle;
         ballChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
@@ -90,7 +90,6 @@ public class PlayerBall : NetworkBehaviour
 
     void ThrowBall()
     {
-        //CurrentBall.transform.LookAt(ballHolder.forward * 10f);
         CurrentBall.transform.SetParent(null, true);
         CurrentBall.Throw();
         CurrentBall = null;
@@ -98,23 +97,15 @@ public class PlayerBall : NetworkBehaviour
 
     void DetermineInputDirection(NetworkInputData data)
     {
-        currentAimAngle = currentAimAngle > 360 ? currentAimAngle - 360 : currentAimAngle;
-        currentAimAngle = currentAimAngle < 0 ? currentAimAngle + 360 : currentAimAngle;
-        if (data.buttons.IsSet(NetworkInputData.LEFT))
+        CurrentAimAngle = CurrentAimAngle > 360 ? CurrentAimAngle - 360 : CurrentAimAngle;
+        CurrentAimAngle = CurrentAimAngle < 0 ? CurrentAimAngle + 360 : CurrentAimAngle;
+        if (data.buttons.IsSet(NetworkInputData.UP))
         {
-            currentAimAngle += currentAimAngle > 90 && currentAimAngle < 270 ? aimTurnSpeed * Time.deltaTime : -aimTurnSpeed * Time.deltaTime;
-        }
-        else if (data.buttons.IsSet(NetworkInputData.RIGHT))
-        {
-            currentAimAngle += currentAimAngle > 90 && currentAimAngle < 270 ? -aimTurnSpeed * Time.deltaTime : aimTurnSpeed * Time.deltaTime;
-        }
-        else if (data.buttons.IsSet(NetworkInputData.UP))
-        {
-            currentAimAngle += currentAimAngle < 180 && currentAimAngle > 0 ? -aimTurnSpeed * Time.deltaTime : aimTurnSpeed * Time.deltaTime;
+            CurrentAimAngle += playerTeam.TeamIndex == 1 ? -aimTurnSpeed * Time.deltaTime : aimTurnSpeed * Time.deltaTime;
         }
         else if (data.buttons.IsSet(NetworkInputData.DOWN))
         {
-            currentAimAngle += currentAimAngle < 180 && currentAimAngle > 0 ? aimTurnSpeed * Time.deltaTime : -aimTurnSpeed * Time.deltaTime;
+            CurrentAimAngle += playerTeam.TeamIndex == 1 ? aimTurnSpeed * Time.deltaTime : -aimTurnSpeed * Time.deltaTime;
         }
     }
 
@@ -137,10 +128,9 @@ public class PlayerBall : NetworkBehaviour
         }
         if (CurrentBall != null)
         {
-            //ballHolder.localEulerAngles = new Vector3(0, currentAimAngle, 0);
             CurrentBall.transform.localPosition = ballHolder.forward * holdRadius;
             CurrentBall.transform.localRotation = Quaternion.identity;
-            CurrentBall.transform.RotateAround(transform.position, Vector3.up, currentAimAngle);
+            CurrentBall.transform.RotateAround(transform.position, Vector3.up, CurrentAimAngle);
         }
     }
 }

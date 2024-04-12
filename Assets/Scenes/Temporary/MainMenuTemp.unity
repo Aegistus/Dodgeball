@@ -969,7 +969,7 @@ MonoBehaviour:
   startMenu: {fileID: 192009528}
   loginMenu: {fileID: 1561901717}
   nameInputField: {fileID: 269477586}
-  gameSceneName: SampleScene
+  gameSceneName: GameScene
 --- !u!1 &457752545
 GameObject:
   m_ObjectHideFlags: 0

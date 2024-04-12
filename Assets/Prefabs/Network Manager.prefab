@@ -44,5 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbcab82512f2daa469ab2bd13be704eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSceneName: GameScene
   _playerPrefab:
     RawGuidValue: 47007fc9ee62fd74094edc98362a6c40
+  LocalPlayerName: 
