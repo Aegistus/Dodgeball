@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89c7e6321a0114c42b23a0ad6bede4fe, type: 3}
-  m_Name: 
+  m_Name: UI_Clicked
   m_EditorClassIdentifier: 
   audioVariants:
   - {fileID: 8300000, guid: b5b52e49ae0396e44bf55ff5abeeb313, type: 3}

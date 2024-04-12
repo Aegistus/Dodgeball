@@ -15,24 +15,17 @@ public class PlayerName : NetworkBehaviour
     public override void Spawned()
     {
         nameChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        if (Runner.IsServer)
+        Team team = GetComponent<Team>();
+        if (team.LocalPlayer)
         {
             NetworkManager netManager = FindObjectOfType<NetworkManager>();
+            SetName(netManager.LocalPlayerName);
         }
+        nameText.text = Name;
     }
 
     public override void Render()
     {
-        if (!updated)
-        {
-            Team team = GetComponent<Team>();
-            if (team.LocalPlayer)
-            {
-                NetworkManager netManager = FindObjectOfType<NetworkManager>();
-                SetName(netManager.LocalPlayerName);
-            }
-            updated = true;
-        }
         foreach (var change in nameChangeDetector.DetectChanges(this))
         {
             if (change == nameof(Name))
@@ -40,6 +33,7 @@ public class PlayerName : NetworkBehaviour
                 nameText.text = Name;
             }
         }
+        print(Name);
     }
 
     public void SetName(string name)

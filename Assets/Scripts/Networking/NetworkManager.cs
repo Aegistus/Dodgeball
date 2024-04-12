@@ -25,7 +25,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool left;
     private bool right;
 
-    public string LocalPlayerName { get; set; } = "";
+    public string LocalPlayerName = "";
 
     void Awake()
     {
@@ -121,6 +121,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         Team playerTeam = networkPlayerObject.GetComponent<Team>();
         playerTeam.SetTeam(teamIndex);
         TeamManager.AddTeamMember(teamIndex);
+        if (playerTeam.LocalPlayer)
+        {
+            networkPlayerObject.GetComponent<PlayerName>().SetName(LocalPlayerName);
+        }
         // Make player temporarily invincible
         networkPlayerObject.GetComponent<PlayerElimination>().Invincible = true;
     }
@@ -141,10 +145,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         spacebar |= Input.GetKeyDown(KeyCode.Space);
         shift |= Input.GetKeyDown(KeyCode.LeftShift);
-        up |= Input.GetKeyDown(KeyCode.UpArrow);
-        down |= Input.GetKeyDown(KeyCode.DownArrow);
-        left |= Input.GetKeyDown(KeyCode.LeftArrow);
-        right |= Input.GetKeyDown(KeyCode.RightArrow);
+        up |= Input.GetKey(KeyCode.UpArrow);
+        down |= Input.GetKey(KeyCode.DownArrow);
+        left |= Input.GetKey(KeyCode.LeftArrow);
+        right |= Input.GetKey(KeyCode.RightArrow);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)

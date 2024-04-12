@@ -11,13 +11,10 @@ public class PlayerBall : NetworkBehaviour
     [SerializeField] float holdRadius = 2f;
     [SerializeField] float aimTurnSpeed = 5f;
 
-    public Vector3 CurrentAimDirection => currentAimDirection;
-    public Vector3 TargetAimDirection => targetAimDirection;
     [Networked] public Ball CurrentBall { get; set; }
 
-    Vector3 currentAimDirection = Vector3.right;
-    Vector3 targetAimDirection = Vector3.right;
-    Vector3 defaultAimDirection;
+    float currentAimAngle = 0;
+    float defaultAimAngle;
     Collider[] pickupCheckResults = new Collider[20];
     Team playerTeam;
     ChangeDetector ballChangeDetector;
@@ -26,8 +23,8 @@ public class PlayerBall : NetworkBehaviour
     {
         playerTeam = GetComponent<Team>();
         // set starting aim based on team
-        defaultAimDirection = playerTeam.TeamIndex == 1 ? Vector3.right : Vector3.left;
-        currentAimDirection = defaultAimDirection;
+        defaultAimAngle = playerTeam.TeamIndex == 1 ? 90 : 270;
+        currentAimAngle = defaultAimAngle;
         ballChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
@@ -81,7 +78,7 @@ public class PlayerBall : NetworkBehaviour
         closestBall.PickedUp = true;
         CurrentBall = closestBall;
         CurrentBall.transform.SetParent(ballHolder);
-        CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
+        CurrentBall.transform.localPosition = Vector3.forward * holdRadius;
         Team ballsTeam = CurrentBall.GetComponent<Team>();
         if (playerTeam.LocalPlayer)
         {
@@ -93,37 +90,31 @@ public class PlayerBall : NetworkBehaviour
 
     void ThrowBall()
     {
-        CurrentBall.transform.LookAt(CurrentBall.transform.position + currentAimDirection);
+        //CurrentBall.transform.LookAt(ballHolder.forward * 10f);
         CurrentBall.transform.SetParent(null, true);
         CurrentBall.Throw();
         CurrentBall = null;
     }
 
-    void CalculateTargetAimDirection(NetworkInputData data)
+    void DetermineInputDirection(NetworkInputData data)
     {
-        Vector3 newDirectTarget = Vector3.zero;
-        if (data.buttons.IsSet(NetworkInputData.UP))
-        {
-            newDirectTarget += Vector3.forward;
-        }
-        if (data.buttons.IsSet(NetworkInputData.DOWN))
-        {
-            newDirectTarget += Vector3.back;
-        }
+        currentAimAngle = currentAimAngle > 360 ? currentAimAngle - 360 : currentAimAngle;
+        currentAimAngle = currentAimAngle < 0 ? currentAimAngle + 360 : currentAimAngle;
         if (data.buttons.IsSet(NetworkInputData.LEFT))
         {
-            newDirectTarget += Vector3.left;
+            currentAimAngle += currentAimAngle > 90 && currentAimAngle < 270 ? aimTurnSpeed * Time.deltaTime : -aimTurnSpeed * Time.deltaTime;
         }
-        if (data.buttons.IsSet(NetworkInputData.RIGHT))
+        else if (data.buttons.IsSet(NetworkInputData.RIGHT))
         {
-            newDirectTarget += Vector3.right;
+            currentAimAngle += currentAimAngle > 90 && currentAimAngle < 270 ? -aimTurnSpeed * Time.deltaTime : aimTurnSpeed * Time.deltaTime;
         }
-        newDirectTarget.Normalize();
-        // if direction input changed, set it as new target direction
-        if (newDirectTarget != Vector3.zero)
+        else if (data.buttons.IsSet(NetworkInputData.UP))
         {
-            targetAimDirection = newDirectTarget;
-            print(targetAimDirection);
+            currentAimAngle += currentAimAngle < 180 && currentAimAngle > 0 ? -aimTurnSpeed * Time.deltaTime : aimTurnSpeed * Time.deltaTime;
+        }
+        else if (data.buttons.IsSet(NetworkInputData.DOWN))
+        {
+            currentAimAngle += currentAimAngle < 180 && currentAimAngle > 0 ? aimTurnSpeed * Time.deltaTime : -aimTurnSpeed * Time.deltaTime;
         }
     }
 
@@ -142,18 +133,14 @@ public class PlayerBall : NetworkBehaviour
                     ThrowBall();
                 }
             }
-            CalculateTargetAimDirection(data);
+            DetermineInputDirection(data);
         }
         if (CurrentBall != null)
         {
-            currentAimDirection = Vector3.Lerp(currentAimDirection, targetAimDirection, aimTurnSpeed * Runner.DeltaTime);
-            currentAimDirection.Normalize();
-            CurrentBall.transform.localPosition = currentAimDirection * holdRadius;
-            CurrentBall.transform.LookAt(CurrentBall.transform.position + currentAimDirection);
-        }
-        else
-        {
-            currentAimDirection = targetAimDirection;
+            //ballHolder.localEulerAngles = new Vector3(0, currentAimAngle, 0);
+            CurrentBall.transform.localPosition = ballHolder.forward * holdRadius;
+            CurrentBall.transform.localRotation = Quaternion.identity;
+            CurrentBall.transform.RotateAround(transform.position, Vector3.up, currentAimAngle);
         }
     }
 }

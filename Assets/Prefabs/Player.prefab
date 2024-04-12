@@ -160,7 +160,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   holdRadius: 2
-  aimTurnSpeed: 10
+  aimTurnSpeed: 2000
   _CurrentBall: {fileID: 0}
 --- !u!114 &733613188760144879
 MonoBehaviour:
@@ -202,6 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nameText: {fileID: 5384056107556629417}
+  _Name: 
 --- !u!114 &387829853380308991
 MonoBehaviour:
   m_ObjectHideFlags: 0
