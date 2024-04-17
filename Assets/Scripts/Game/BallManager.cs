@@ -11,8 +11,6 @@ public class BallManager : NetworkBehaviour
 
     Dictionary<Transform, Ball> BallSpawnChecks { get; set; } = new();
 
-    bool spawnBalls = true;
-
     public override void Spawned()
     {
         if (Runner.IsServer)
@@ -24,16 +22,35 @@ public class BallManager : NetworkBehaviour
             }
             StartCoroutine(BallRespawnCheck());
             GameManager.OnTeamWin += StopSpawningBallsAfterWin;
+            GameManager.OnGameReset += GameReset;
+        }
+    }
+
+    private void GameReset()
+    {
+        if (Runner.IsServer)
+        {
+            BallSpawnChecks.Clear();
+            //foreach (var spawn in ballSpawnPoints)
+            //{
+            //    Ball ball = SpawnBall(spawn);
+            //    BallSpawnChecks.Add(spawn, ball);
+            //}
+            StartCoroutine(BallRespawnCheck());
         }
     }
 
     private void StopSpawningBallsAfterWin(int winningTeam)
     {
-        spawnBalls = false;
-        Ball[] allBalls = FindObjectsByType<Ball>(FindObjectsSortMode.None);
-        foreach (var ball in allBalls)
+        if (Runner.IsServer)
         {
-            Destroy(ball.gameObject);
+            StopCoroutine(BallRespawnCheck());
+            Ball[] allBalls = FindObjectsByType<Ball>(FindObjectsSortMode.None);
+            foreach (var ball in allBalls)
+            {
+                Destroy(ball.gameObject);
+            }
+            BallSpawnChecks.Clear();
         }
     }
 
@@ -45,22 +62,16 @@ public class BallManager : NetworkBehaviour
 
     IEnumerator BallRespawnCheck()
     {
-        while (spawnBalls)
+        while (true)
         {
             yield return new WaitForSeconds(ballRespawnTime);
-            if (spawnBalls)
-            {
-                foreach (var spawnPoint in ballSpawnPoints)
+            foreach (var spawnPoint in ballSpawnPoints)
+                if (!BallSpawnChecks.TryGetValue(spawnPoint, out _))
                 {
-                    Ball ball = BallSpawnChecks[spawnPoint];
-                    if (ball == null)
-                    {
-                        Ball newBall = SpawnBall(spawnPoint);
-                        BallSpawnChecks.Remove(spawnPoint);
-                        BallSpawnChecks.Add(spawnPoint, newBall);
-                    }
+                    Ball newBall = SpawnBall(spawnPoint);
+                    BallSpawnChecks.Remove(spawnPoint);
+                    BallSpawnChecks.Add(spawnPoint, newBall);
                 }
-            }
         }
     }
 }

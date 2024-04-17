@@ -13,6 +13,7 @@ public class GameOverUI : MonoBehaviour
     {
         text.gameObject.SetActive(false);
         GameManager.OnTeamWin += GameManager_OnTeamWin;
+        GameManager.OnGameReset += GameManager_OnGameReset;
     }
 
     private void GameManager_OnTeamWin(int teamIndex)
@@ -28,5 +29,9 @@ public class GameOverUI : MonoBehaviour
             text.color = redColor;
             text.text = "RED TEAM WINS!!";
         }
+    }
+    private void GameManager_OnGameReset()
+    {
+        text.gameObject.SetActive(false);
     }
 }
