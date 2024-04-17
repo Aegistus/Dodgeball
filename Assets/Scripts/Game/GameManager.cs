@@ -13,8 +13,11 @@ public class GameManager : NetworkBehaviour
 
     public GameRules currentGameRules;
 
+    [Networked] public bool GameWon { get; set; }
     [Networked] public int BlueScore { get; set; }
     [Networked] public int RedScore { get; set; }
+
+    int maxScore = 3;
 
     ChangeDetector scoreChangeDetect;
 
@@ -49,6 +52,10 @@ public class GameManager : NetworkBehaviour
 
     private void UpdateScore(NetworkObject obj, int teamIndex)
     {
+        if (GameWon)
+        {
+            return;
+        }
         if (teamIndex == 1)
         {
             RedScore++;
@@ -56,6 +63,16 @@ public class GameManager : NetworkBehaviour
         else if (teamIndex == 2)
         {
             BlueScore++;
+        }
+        if (BlueScore >= maxScore)
+        {
+            OnTeamWin?.Invoke(Team.BLUE_TEAM);
+            GameWon = true;
+        }
+        else if (RedScore >= maxScore)
+        {
+            OnTeamWin?.Invoke(Team.RED_TEAM);
+            GameWon = true;
         }
     }
 }

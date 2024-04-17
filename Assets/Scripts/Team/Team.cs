@@ -5,6 +5,9 @@ using Fusion;
 
 public class Team : NetworkBehaviour
 {
+    public static readonly int BLUE_TEAM = 1;
+    public static readonly int RED_TEAM = 2;
+
     [Networked] public int TeamIndex { get; private set; } = 0;
 
     public bool LocalPlayer { get; set; } = false;

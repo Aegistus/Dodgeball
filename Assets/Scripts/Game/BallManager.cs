@@ -11,6 +11,8 @@ public class BallManager : NetworkBehaviour
 
     Dictionary<Transform, Ball> BallSpawnChecks { get; set; } = new();
 
+    bool spawnBalls = true;
+
     public override void Spawned()
     {
         if (Runner.IsServer)
@@ -21,6 +23,17 @@ public class BallManager : NetworkBehaviour
                 BallSpawnChecks.Add(spawn, ball);
             }
             StartCoroutine(BallRespawnCheck());
+            GameManager.OnTeamWin += StopSpawningBallsAfterWin;
+        }
+    }
+
+    private void StopSpawningBallsAfterWin(int winningTeam)
+    {
+        spawnBalls = false;
+        Ball[] allBalls = FindObjectsByType<Ball>(FindObjectsSortMode.None);
+        foreach (var ball in allBalls)
+        {
+            Destroy(ball.gameObject);
         }
     }
 
@@ -32,17 +45,20 @@ public class BallManager : NetworkBehaviour
 
     IEnumerator BallRespawnCheck()
     {
-        while (true)
+        while (spawnBalls)
         {
             yield return new WaitForSeconds(ballRespawnTime);
-            foreach (var spawnPoint in ballSpawnPoints)
+            if (spawnBalls)
             {
-                Ball ball = BallSpawnChecks[spawnPoint];
-                if (ball == null)
+                foreach (var spawnPoint in ballSpawnPoints)
                 {
-                    Ball newBall = SpawnBall(spawnPoint);
-                    BallSpawnChecks.Remove(spawnPoint);
-                    BallSpawnChecks.Add(spawnPoint, newBall);
+                    Ball ball = BallSpawnChecks[spawnPoint];
+                    if (ball == null)
+                    {
+                        Ball newBall = SpawnBall(spawnPoint);
+                        BallSpawnChecks.Remove(spawnPoint);
+                        BallSpawnChecks.Add(spawnPoint, newBall);
+                    }
                 }
             }
         }

@@ -33,7 +33,6 @@ public class PlayerName : NetworkBehaviour
                 nameText.text = Name;
             }
         }
-        print(Name);
     }
 
     public void SetName(string name)
