@@ -66,12 +66,15 @@ public class BallManager : NetworkBehaviour
         {
             yield return new WaitForSeconds(ballRespawnTime);
             foreach (var spawnPoint in ballSpawnPoints)
-                if (!BallSpawnChecks.TryGetValue(spawnPoint, out _))
+            {
+                BallSpawnChecks.TryGetValue(spawnPoint, out Ball oldBall);
+                if (oldBall == null)
                 {
                     Ball newBall = SpawnBall(spawnPoint);
                     BallSpawnChecks.Remove(spawnPoint);
                     BallSpawnChecks.Add(spawnPoint, newBall);
                 }
+            }
         }
     }
 }
