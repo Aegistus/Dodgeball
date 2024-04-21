@@ -101,16 +101,22 @@ public class PlayerBall : NetworkBehaviour
         CurrentAimAngle = CurrentAimAngle < 0 ? CurrentAimAngle + 360 : CurrentAimAngle;
         if (data.buttons.IsSet(NetworkInputData.UP))
         {
-            CurrentAimAngle += playerTeam.TeamIndex == 1 ? -aimTurnSpeed * Time.deltaTime : aimTurnSpeed * Time.deltaTime;
+            CurrentAimAngle += playerTeam.TeamIndex == 1 ? -aimTurnSpeed * Time.fixedDeltaTime : aimTurnSpeed * Time.fixedDeltaTime;
         }
         else if (data.buttons.IsSet(NetworkInputData.DOWN))
         {
-            CurrentAimAngle += playerTeam.TeamIndex == 1 ? aimTurnSpeed * Time.deltaTime : -aimTurnSpeed * Time.deltaTime;
+            CurrentAimAngle += playerTeam.TeamIndex == 1 ? aimTurnSpeed * Time.fixedDeltaTime : -aimTurnSpeed * Time.fixedDeltaTime;
         }
     }
 
     public override void FixedUpdateNetwork()
     {
+        if (CurrentBall != null)
+        {
+            CurrentBall.transform.localPosition = ballHolder.forward * holdRadius;
+            CurrentBall.transform.localRotation = Quaternion.identity;
+            CurrentBall.transform.RotateAround(transform.position, Vector3.up, CurrentAimAngle);
+        }
         if (GetInput(out NetworkInputData data) && HasStateAuthority)
         {
             if (data.buttons.IsSet(NetworkInputData.SPACEBAR))
@@ -125,12 +131,6 @@ public class PlayerBall : NetworkBehaviour
                 }
             }
             DetermineInputDirection(data);
-        }
-        if (CurrentBall != null)
-        {
-            CurrentBall.transform.localPosition = ballHolder.forward * holdRadius;
-            CurrentBall.transform.localRotation = Quaternion.identity;
-            CurrentBall.transform.RotateAround(transform.position, Vector3.up, CurrentAimAngle);
         }
     }
 }

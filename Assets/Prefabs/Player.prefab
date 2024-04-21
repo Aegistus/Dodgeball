@@ -160,8 +160,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   holdRadius: 2
-  aimTurnSpeed: 2000
+  aimTurnSpeed: 500
   _CurrentBall: {fileID: 0}
+  _CurrentAimAngle: 0
 --- !u!114 &733613188760144879
 MonoBehaviour:
   m_ObjectHideFlags: 0
