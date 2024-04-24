@@ -55,6 +55,11 @@ public class GameManager : NetworkBehaviour
 
     private void UpdateScore(NetworkObject obj, int teamIndex)
     {
+        // Randomly from "Win 1" to "Win 3"
+        System.Random rnd = new System.Random();
+        int d = rnd.Next(1, 3);
+        String win = "Win " + d.ToString();
+
         if (GameWon)
         {
             return;
@@ -72,12 +77,14 @@ public class GameManager : NetworkBehaviour
             OnTeamWin?.Invoke(Team.BLUE_TEAM);
             GameWon = true;
             StartCoroutine(RestartLevel());
+            SoundManager.Instance.PlaySoundGlobal(SoundManager.Instance.GetSoundID(win));   // Winning sound
         }
         else if (RedScore >= maxScore)
         {
             OnTeamWin?.Invoke(Team.RED_TEAM);
             GameWon = true;
             StartCoroutine(RestartLevel());
+            SoundManager.Instance.PlaySoundGlobal(SoundManager.Instance.GetSoundID(win));   // Winning sound
         }
     }
 

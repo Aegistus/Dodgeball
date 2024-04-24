@@ -4,14 +4,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Fusion;
 using TMPro;
+using Unity.VisualScripting;
 
 public class MainMenuTempUI : MonoBehaviour
 {
     [SerializeField] GameObject startMenu;
     [SerializeField] GameObject loginMenu;
+    [SerializeField] GameObject optionMenu;
     [SerializeField] TMP_InputField nameInputField;
     [SerializeField] string gameSceneName = "SampleScene";
 
+    
     NetworkManager netManager;
     GameMode gameMode;
 
@@ -19,6 +22,7 @@ public class MainMenuTempUI : MonoBehaviour
     {
         startMenu.SetActive(true);
         loginMenu.SetActive(false);
+        optionMenu.SetActive(false);
         netManager = FindAnyObjectByType<NetworkManager>();
     }
 
@@ -51,6 +55,14 @@ public class MainMenuTempUI : MonoBehaviour
     {
         startMenu.SetActive(true);
         loginMenu.SetActive(false);
+        optionMenu.SetActive(false);
+    }
+
+    public void SetOptionMenu()
+    {
+        startMenu.SetActive(false);
+        loginMenu.SetActive(false);
+        optionMenu.SetActive(true);
     }
 
     public void QuitGame()
